@@ -1,27 +1,11 @@
 <template>
-  <div class="dashboard-container">
+  <div class="tab-container">
     <el-tabs style="margin: 30px 0px" type="border-card">
       <!-- 添加的按钮 -->
-      <div class="header">
-        <div class="header-left">
-          <svg-icon icon-class="list" />
-          View List
-        </div>
-        <div class="component-item">
-          <el-button
-            @click="toSqlEdit"
-            v-waves
-            type="primary"
-            icon="el-icon-plus"
-            circle
-          ></el-button>
-          <!-- 打开添sql编辑器 -->
-          
-        </div>
-      </div>
-      <!-- sql表 -->
-      <sql-table ref="child"></sql-table>
-      <!-- 分页 -->
+      <user-btn @fatherMethod="fatherMethod"></user-btn>
+      <!-- 调用userTable -->
+      <user-table ref='child'></user-table>
+      <!-- <source-table  ref='child'></source-table> -->
       <el-pagination background layout="prev, pager, next" :total="1000">
       </el-pagination>
     </el-tabs>
@@ -29,26 +13,48 @@
 </template>
 
 <script>
+import userTable from './components/userTable';
+import userBtn from './components/userBtn';
 import waves from "@/directive/waves/index.js"; // 水波纹指令
-import { mapGetters } from 'vuex'
 
 export default {
-  name: 'Dashboard',
+  name: "DashBoard",
+  components:{userTable,userBtn},
   directives: {
     waves,
   },
-  computed: {
-    ...mapGetters([
-      'name'
-    ])
-  }
-}
+  data() {
+    return {
+      dialogFormVisible: false,
+      form: {
+        sourceName: "zytest",
+        dataSourceType: "mysql",
+        username: "root",
+        password: "1lLsuiB9S6w6tvCxQVq9Pi1tzLcZsLTP3fPWiaSVBvekADGgePX881qnI6Lp",
+        driverClassName: "com.mysql.cj.jdbc.Driver",
+        dataSourceUrl: "jdbc:mysql://39.96.79.148:3308/data_governance?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false",
+      },
+      
+      formLabelWidth: "120px",
+    };
+  },
+  watch: {},
+  created() {},
+  methods: {
+    // 调用getlist()
+    fatherMethod(){
+      this.$refs.child.getList()
+    }
+    
+  },
+};
 </script>
 
-<style lang="scss" scoped>
-.dashboard-container {
+<style scoped>
+.tab-container {
   margin: 30px;
 }
+
 
 .ceshi{
   margin-left: 120px;
