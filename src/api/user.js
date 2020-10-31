@@ -26,6 +26,15 @@ export function deleteUser(data) {
   })
 }
 
+// 修改用户
+export function updateUser(data) {
+  return request({
+    url: 'http://192.144.225.15:10040/JcUser/update',
+    method: 'post',
+    data
+  })
+}
+
 
 
 

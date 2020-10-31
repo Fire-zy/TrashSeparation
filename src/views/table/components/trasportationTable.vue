@@ -5,13 +5,21 @@
     fit
     :default-sort="{ prop: 'sourceName', order: 'ascending' }"
   >
-    <el-table-column prop="userId" label="ID" sortable width="200px">
-    </el-table-column>
+    <el-table-column prop="id" label="ID" sortable ></el-table-column>
     <el-table-column prop="userName" label="用户名"> </el-table-column>
-    <el-table-column prop="phoneNumber" label="电话" width="250">
+    <el-table-column prop="trashSeparationPrice" label="收费价格" ></el-table-column>
+    <el-table-column prop="trashStationNumber" label="运输数量" > </el-table-column>
+    <el-table-column prop="trashSeparationType" label="垃圾种类"> </el-table-column>
+    <el-table-column prop="transportStatus" label="运输状态" >
+      <template slot-scope="scope">
+        <el-tag
+          :type="scope.row.transportStatus === '运输成功' ? 'primary' : 'success'"
+          disable-transitions>{{scope.row.transportStatus}}</el-tag>
+      </template>
     </el-table-column>
-    <el-table-column prop="email" label="邮箱" width="250px"> </el-table-column>
-    <el-table-column prop="caozuo" label="操作" width="250px">
+    
+    
+    <el-table-column prop="caozuo" label="操作">
       <template slot-scope="scope">
         <el-button
           v-waves
@@ -25,12 +33,12 @@
           icon="el-icon-delete"
           circle
           @click.native.prevent="
-            removeId(scope.$index, tableData, scope.row.userId)
+            removeId(scope.$index, tableData, scope.row.id)
           "
         ></el-button>
 
         <!-- 修改用户 -->
-        <el-dialog top="8vh" title="添加用户" :visible.sync="dialogFormVisible">
+        <el-dialog top="8vh" title="修改用户" :visible.sync="dialogFormVisible">
           <el-form :model="form">
             <el-form-item
               label="用户名"
@@ -40,21 +48,42 @@
               <el-input v-model="form.userName" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item
-              label="电话"
-              prop="phoneNumber"
+              label="收费价格"
+              prop="trashSeparationPrice"
               :label-width="formLabelWidth"
             >
               <el-input
-                v-model="form.phoneNumber"
+                v-model="form.trashSeparationPrice"
                 autocomplete="off"
               ></el-input>
             </el-form-item>
             <el-form-item
-              label="邮箱"
-              prop="email"
+              label="运输数量"
+              prop="trashStationNumber"
               :label-width="formLabelWidth"
             >
-              <el-input v-model="form.email" autocomplete="off"></el-input>
+              <el-input v-model="form.trashStationNumber" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item
+              label="运输时间"
+              prop="transportationTime"
+              :label-width="formLabelWidth"
+            >
+              <el-input v-model="form.transportationTime" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item
+              label="垃圾种类"
+              prop="trashSeparationType"
+              :label-width="formLabelWidth"
+            >
+              <el-input v-model="form.trashSeparationType" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item
+              label="运输状态"
+              prop="transportStatus"
+              :label-width="formLabelWidth"
+            >
+              <el-input v-model="form.transportStatus" autocomplete="off"></el-input>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -69,7 +98,7 @@
 
 <script>
 import waves from "@/directive/waves/index.js"; // 水波纹指令
-import { queryUser, deleteUser,updateUser } from "@/api/user";
+import { queryTransportation, deleteTransportation,updateTransportation } from "@/api/transportation";
 
 export default {
   data() {
@@ -79,9 +108,10 @@ export default {
       userId: "",
       form: {
         userName: "",
-        phoneNumber: "",
-        email: "",
-        //   delivery: false,
+        trashSeparationPrice: "",
+        trashStationNumber: "",
+        trashSeparationType: "",
+        transportStatus: "",
       },
       formLabelWidth: "120px",
     };
@@ -95,13 +125,13 @@ export default {
   methods: {
     // 查询列表
     getList() {
-      queryUser().then((res) => {
+      queryTransportation().then((res) => {
         this.tableData = res;
       });
     },
     // 按指定id删除数据
     removeId(index, rows, id) {
-      console.log(index);
+      console.log(id);
       event.stopPropagation(); //不再派发事件。
 
       this.$confirm("此操作将永久删除该数据源, 是否继续?", "提示", {
@@ -111,14 +141,12 @@ export default {
       })
         .then(() => {
           rows.splice(index, 1);
-          deleteUser({ userId: id }).then((resp) => {
-            if (resp.code == 200) {
+          deleteTransportation({ id: id }).then((resp) => {
               this.getList(),
                 this.$message({
                   message: "删除成功",
                   type: "success",
                 });
-            }
           });
         })
         .catch(() => {
@@ -135,7 +163,7 @@ export default {
     },
 // 修改用户
     editUser(){
-      updateUser(this.form).then(res=>{
+      updateTransportation(this.form).then(res=>{
         this.dialogFormVisible = false,
         this.getList(),
         this.$message({

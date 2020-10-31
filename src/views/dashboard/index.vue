@@ -26,15 +26,6 @@ export default {
   data() {
     return {
       dialogFormVisible: false,
-      form: {
-        sourceName: "zytest",
-        dataSourceType: "mysql",
-        username: "root",
-        password: "1lLsuiB9S6w6tvCxQVq9Pi1tzLcZsLTP3fPWiaSVBvekADGgePX881qnI6Lp",
-        driverClassName: "com.mysql.cj.jdbc.Driver",
-        dataSourceUrl: "jdbc:mysql://39.96.79.148:3308/data_governance?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false",
-      },
-      
       formLabelWidth: "120px",
     };
   },
